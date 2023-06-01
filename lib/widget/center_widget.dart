@@ -13,7 +13,7 @@ class _FillContainerState extends State<FillContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height / 1.8,
+      // height: MediaQuery.of(context).size.height / 1.8,
       width: MediaQuery.of(context).size.width / 1.8,
       decoration: const BoxDecoration(
         color: Colors.white,
