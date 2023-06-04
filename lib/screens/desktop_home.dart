@@ -1,23 +1,36 @@
 import 'package:age_calculator/widget/center_widget.dart';
 import 'package:flutter/material.dart';
 
-class DesktopHome extends StatelessWidget {
+class DesktopHome extends StatefulWidget {
   const DesktopHome({super.key});
 
   @override
+  State<DesktopHome> createState() => _DesktopHomeState();
+}
+
+class _DesktopHomeState extends State<DesktopHome> {
+  bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        // height: MediaQuery.of(context).size.height,
-        // width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(color: Color(0xffF0F0F0)),
-        child: Column(
-          children: [
-            Expanded(child: Container()),
-            const Expanded(flex: 4, child: FillContainer()),
-            Expanded(child: Container()),
-          ],
-        ),
+      backgroundColor: const Color(0xffF0F0F0),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          isDesktop(context)
+              ? Expanded(flex: 1, child: Container())
+              : const SizedBox(
+                  height: 0,
+                ),
+          Expanded(
+              flex: isDesktop(context) ? 4 : 3, child: const FillContainer()),
+          isDesktop(context)
+              ? Expanded(flex: 1, child: Container())
+              : const SizedBox(
+                  height: 0,
+                ),
+        ],
       ),
     );
   }

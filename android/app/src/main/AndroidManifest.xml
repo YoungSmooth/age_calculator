@@ -2,7 +2,7 @@
     <application
         android:label="age_calculator"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/age_calculator">
         <activity
             android:name=".MainActivity"
             android:exported="true"
