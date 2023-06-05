@@ -18,18 +18,10 @@ class _DesktopHomeState extends State<DesktopHome> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          isDesktop(context)
-              ? Expanded(flex: 1, child: Container())
-              : const SizedBox(
-                  height: 0,
-                ),
+          Expanded(flex: 1, child: Container()),
           Expanded(
               flex: isDesktop(context) ? 4 : 3, child: const FillContainer()),
-          isDesktop(context)
-              ? Expanded(flex: 1, child: Container())
-              : const SizedBox(
-                  height: 0,
-                ),
+          Expanded(flex: 1, child: Container())
         ],
       ),
     );

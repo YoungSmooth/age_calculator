@@ -11,16 +11,19 @@ class MobileHome extends StatefulWidget {
 class _MobileHomeState extends State<MobileHome> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        // height: MediaQuery.of(context).size.height,
-        // width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(color: Color(0xffF0F0F0)),
+    return const Scaffold(
+      backgroundColor: Color(0xffF0F0F0),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Column(
           children: [
-            Expanded(flex: 1, child: Container()),
-            const Expanded(flex: 4, child: FillContainer()),
-            Expanded(flex: 2, child: Container()),
+            SizedBox(
+              height: 150,
+            ),
+            SizedBox(height: 400, child: Center(child: FillContainer())),
+            SizedBox(
+              height: 150,
+            )
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:age_calculator/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 class RowForm extends StatefulWidget {
   const RowForm({super.key});
@@ -12,12 +13,23 @@ class RowForm extends StatefulWidget {
 bool isDesktop(BuildContext context) =>
     MediaQuery.of(context).size.width >= 600;
 
-class _RowFormState extends State<RowForm> {
+class _RowFormState extends State<RowForm> with AnimationMixin {
+  late Animation<double> size;
+
+  @override
+  void initState() {
+    super.initState();
+    size = Tween<double>(begin: 0.0, end: 30).animate(controller);
+    controller.play(duration: const Duration(seconds: 10));
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   String getValueOrDash(int value) {
     return value == 0 ? "--" : value.toString();
   }
+
+  TextEditingController monthInput = TextEditingController();
 
   int years = 0;
   int months = 0;
@@ -26,7 +38,6 @@ class _RowFormState extends State<RowForm> {
   String day = '';
   String month = '';
   String year = '';
-  bool ontap = true;
 
   int currentYear = DateTime.now().year;
   int currentMonth = DateTime.now().month;
@@ -75,275 +86,302 @@ class _RowFormState extends State<RowForm> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 4,
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: Form(
-                      key: _formKey,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10.0),
-                                  child: Text(
-                                      style: TextStyle(
-                                          letterSpacing: 3,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                          color: ColorManager.kgreyThick),
-                                      'DAY'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 20.0),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    decoration: kformDecoration.copyWith(
-                                      label: FittedBox(
-                                        child: Text(
-                                            style: TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 25,
-                                                color: ColorManager.kgreyThick),
-                                            'DD'),
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'This field is required';
-                                      } else if (int.tryParse(value) == null) {
-                                        return 'Must be a valid number';
-                                      } else if (int.tryParse(value)! < 1 ||
-                                          int.tryParse(value)! > 31) {
-                                        return 'Must be a valid day';
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    onSaved: (value) {
-                                      day = value!;
-                                    },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Form(
+                        key: _formKey,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5.0),
+                                    child: Text(
+                                        style: TextStyle(
+                                            letterSpacing: 3,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                            color: ColorManager.kgreyThick),
+                                        'DAY'),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10.0),
-                                  child: Text(
-                                      style: TextStyle(
-                                          letterSpacing: 3,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                          color: ColorManager.kgreyThick),
-                                      'MONTH'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 20.0),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    decoration: kformDecoration.copyWith(
-                                      label: FittedBox(
-                                        child: Text(
-                                          style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 25,
-                                              color: ColorManager.kgreyThick),
-                                          'MM',
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: kformDecoration.copyWith(
+                                        label: FittedBox(
+                                          child: Text(
+                                              style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                  color:
+                                                      ColorManager.kgreyThick),
+                                              'DD'),
                                         ),
                                       ),
+                                      validator: (value) {
+                                        final valueFromMonth = monthInput.text;
+                                        // var inputtedMonth = _formKey.currentState!. fields['DD']!.value as String?;
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required';
+                                        } else if (int.tryParse(value) ==
+                                            null) {
+                                          return 'Must be a valid number';
+                                        } else if (valueFromMonth == 2 &&
+                                                int.tryParse(value)! < 1 ||
+                                            int.tryParse(value)! > 29) {
+                                          return 'Invalid date';
+                                        } else if (([
+                                                  4,
+                                                  6,
+                                                  9,
+                                                  11
+                                                ].contains(valueFromMonth)) &&
+                                                int.tryParse(value)! < 1 ||
+                                            int.tryParse(value)! > 30) {
+                                          return 'Invalid date';
+                                        } else if (int.tryParse(value)! < 1 ||
+                                            int.tryParse(value)! > 31) {
+                                          return 'Must be a valid day';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onSaved: (value) {
+                                        day = value!;
+                                      },
                                     ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'This field is required';
-                                      } else if (int.tryParse(value) == null) {
-                                        return 'Must be a valid number';
-                                      } else if (int.tryParse(value)! < 1 ||
-                                          int.tryParse(value)! > 12) {
-                                        return 'Must be a valid month';
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    onSaved: (value) {
-                                      month = value!;
-                                    },
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10.0),
-                                  child: Text(
-                                      style: TextStyle(
-                                          letterSpacing: 3,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                          color: ColorManager.kgreyThick),
-                                      'YEAR'),
-                                ),
-                                Padding(
-                                  padding: isDesktop(context)
-                                      ? const EdgeInsets.only(right: 20.0)
-                                      : const EdgeInsets.only(right: 0),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    decoration: kformDecoration.copyWith(
-                                      label: FittedBox(
-                                        child: Text(
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5.0),
+                                    child: Text(
+                                        style: TextStyle(
+                                            letterSpacing: 3,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                            color: ColorManager.kgreyThick),
+                                        'MONTH'),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: TextFormField(
+                                      controller: monthInput,
+                                      keyboardType: TextInputType.number,
+                                      decoration: kformDecoration.copyWith(
+                                        label: FittedBox(
+                                          child: Text(
                                             style: TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 25,
+                                                fontSize: 20,
                                                 color: ColorManager.kgreyThick),
-                                            'YYYY'),
+                                            'MM',
+                                          ),
+                                        ),
                                       ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required';
+                                        } else if (int.tryParse(value) ==
+                                            null) {
+                                          return 'Must be a valid number';
+                                        } else if (int.tryParse(value)! < 1 ||
+                                            int.tryParse(value)! > 12) {
+                                          return 'Must be a valid month';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onSaved: (value) {
+                                        month = value!;
+                                      },
                                     ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'This field is required';
-                                      } else if (int.tryParse(value) == null) {
-                                        return 'Must be a valid number';
-                                      } else if (int.tryParse(value)! <= 0 ||
-                                          int.tryParse(value)! > 2023) {
-                                        return 'Must be in the past';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      year = value!;
-                                    },
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          )
-                        ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5.0),
+                                    child: Text(
+                                        style: TextStyle(
+                                            letterSpacing: 3,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10,
+                                            color: ColorManager.kgreyThick),
+                                        'YEAR'),
+                                  ),
+                                  Padding(
+                                    padding: isDesktop(context)
+                                        ? const EdgeInsets.only(right: 20.0)
+                                        : const EdgeInsets.only(right: 0),
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: kformDecoration.copyWith(
+                                        label: FittedBox(
+                                          child: Text(
+                                              style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                  color:
+                                                      ColorManager.kgreyThick),
+                                              'YYYY'),
+                                        ),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'This field is required';
+                                        } else if (int.tryParse(value) ==
+                                            null) {
+                                          return 'Must be a valid number';
+                                        } else if (int.tryParse(value)! <= 0 ||
+                                            int.tryParse(value)! >
+                                                DateTime.now().year) {
+                                          return 'Must be in the past';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        year = value!;
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  if (isDesktop(context))
-                    const Spacer(
-                      flex: 2,
-                    )
-                ],
-              ),
-              isDesktop(context)
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              color: ColorManager.kgrey,
-                              thickness: 1,
-                              height: 0.5,
+                    if (isDesktop(context))
+                      const Spacer(
+                        flex: 2,
+                      )
+                  ],
+                ),
+                isDesktop(context)
+                    ? Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: ColorManager.kgrey,
+                                thickness: 1,
+                                height: 0.5,
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            onTap: _checkAge,
-                            child: CircleAvatar(
-                              radius: isDesktop(context) ? 40 : 30,
-                              backgroundColor: ColorManager.kpurple,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: SvgPicture.asset(
-                                  svg,
-                                  height: 30,
-                                  semanticsLabel: 'Age calculator Enter',
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.white, BlendMode.srcIn),
+                            InkWell(
+                              onTap: _checkAge,
+                              child: CircleAvatar(
+                                radius: isDesktop(context) ? 40 : 30,
+                                backgroundColor: ColorManager.kpurple,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: SvgPicture.asset(
+                                    svg,
+                                    height: 30,
+                                    semanticsLabel: 'Age calculator Enter',
+                                    colorFilter: const ColorFilter.mode(
+                                        Colors.white, BlendMode.srcIn),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: Stack(
-                        children: [
-                          SizedBox(
-                            height: 70,
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Divider(
-                                    color: ColorManager.kgrey,
-                                    thickness: 1,
-                                    height: 0.5,
+                          ],
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              height: 60,
+                              width: double.infinity,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Divider(
+                                      color: ColorManager.kgrey,
+                                      thickness: 1,
+                                      height: 0.5,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Positioned.fill(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: InkWell(
-                                onTap: _checkAge,
-                                child: CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: ColorManager.kpurple,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: SvgPicture.asset(
-                                      svg,
-                                      height: 25,
-                                      semanticsLabel: 'Age calculator Enter',
-                                      colorFilter: const ColorFilter.mode(
-                                          Colors.white, BlendMode.srcIn),
+                            Positioned.fill(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: InkWell(
+                                  onTap: _checkAge,
+                                  child: CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: ColorManager.kpurple,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: SvgPicture.asset(
+                                        svg,
+                                        height: 25,
+                                        semanticsLabel: 'Age calculator Enter',
+                                        colorFilter: const ColorFilter.mode(
+                                            Colors.white, BlendMode.srcIn),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )),
-            ],
+                          ],
+                        )),
+              ],
+            ),
           ),
         ),
-        Expanded(
-          flex: 3,
+        SizedBox(
+          // height: 300,
           child: Column(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FittedBox(
-                  fit: BoxFit.contain, child: timeDisplay(years, ' years')),
+                  fit: BoxFit.contain,
+                  child: timeDisplay(getValueOrDash(years), ' years')),
               FittedBox(
-                  fit: BoxFit.contain, child: timeDisplay(months, ' months')),
-              FittedBox(fit: BoxFit.contain, child: timeDisplay(days, ' days')),
+                  fit: BoxFit.contain,
+                  child: timeDisplay(getValueOrDash(months), ' months')),
+              FittedBox(
+                  fit: BoxFit.contain,
+                  child: timeDisplay(getValueOrDash(days), ' days')),
             ],
           ),
         )
@@ -351,7 +389,7 @@ class _RowFormState extends State<RowForm> {
     );
   }
 
-  RichText timeDisplay(int initial1, String initial2) {
+  RichText timeDisplay(dynamic initial1, String initial2) {
     return RichText(
       text: TextSpan(
         children: [
