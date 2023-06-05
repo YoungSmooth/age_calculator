@@ -30,6 +30,11 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
   }
 
   TextEditingController monthInput = TextEditingController();
+  @override
+  void dispose() {
+    super.dispose();
+    monthInput.dispose();
+  }
 
   int years = 0;
   int months = 0;
@@ -77,9 +82,9 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
   void _checkAge() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
       _ageCalculator();
       _formKey.currentState!.reset();
+      monthInput.clear();
     }
   }
 
@@ -136,30 +141,34 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
                                       ),
                                       validator: (value) {
                                         final valueFromMonth = monthInput.text;
-                                        // var inputtedMonth = _formKey.currentState!. fields['DD']!.value as String?;
+                                        final valueFromMonthAsInt =
+                                            int.tryParse(valueFromMonth)!;
+
                                         if (value == null || value.isEmpty) {
                                           return 'This field is required';
                                         } else if (int.tryParse(value) ==
                                             null) {
                                           return 'Must be a valid number';
-                                        } else if (valueFromMonth == 2 &&
-                                                int.tryParse(value)! < 1 ||
-                                            int.tryParse(value)! > 29) {
-                                          return 'Invalid date';
-                                        } else if (([
-                                                  4,
-                                                  6,
-                                                  9,
-                                                  11
-                                                ].contains(valueFromMonth)) &&
-                                                int.tryParse(value)! < 1 ||
-                                            int.tryParse(value)! > 30) {
-                                          return 'Invalid date';
-                                        } else if (int.tryParse(value)! < 1 ||
-                                            int.tryParse(value)! > 31) {
-                                          return 'Must be a valid day';
                                         } else {
-                                          return null;
+                                          if (valueFromMonthAsInt == 2 &&
+                                              (int.tryParse(value)! < 1 ||
+                                                  int.tryParse(value)! > 29)) {
+                                            return 'Invalid date';
+                                          } else if ([
+                                                4,
+                                                6,
+                                                9,
+                                                11
+                                              ].contains(valueFromMonthAsInt) &&
+                                              (int.tryParse(value)! < 1 ||
+                                                  int.tryParse(value)! > 30)) {
+                                            return 'Invalid date';
+                                          } else if (int.tryParse(value)! < 1 ||
+                                              int.tryParse(value)! > 31) {
+                                            return 'Must be a valid day';
+                                          } else {
+                                            return null;
+                                          }
                                         }
                                       },
                                       onSaved: (value) {
