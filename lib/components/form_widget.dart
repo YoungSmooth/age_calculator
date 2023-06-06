@@ -1,4 +1,5 @@
 import 'package:age_calculator/constants/constants.dart';
+import 'package:age_calculator/helper/is_zero.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -24,10 +25,6 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
   }
 
   final _formKey = GlobalKey<FormState>();
-
-  String getValueOrDash(int value) {
-    return value == 0 ? "--" : value.toString();
-  }
 
   TextEditingController monthInput = TextEditingController();
   @override
