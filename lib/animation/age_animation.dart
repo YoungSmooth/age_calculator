@@ -19,7 +19,7 @@ class _AgeCounterAnimationState extends State<AgeCounterAnimation>
         AnimationController(duration: const Duration(seconds: 5), vsync: this);
     animation = CurvedAnimation(parent: _controller, curve: Curves.easeInSine);
     _controller.addListener(() {
-      this.setState(() {});
+      setState(() {});
     });
   }
 
