@@ -1,5 +1,5 @@
 import 'package:age_calculator/constants/constants.dart';
-import 'package:age_calculator/helper/is_zero.dart';
+import 'package:age_calculator/helper/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -380,14 +380,26 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FittedBox(
-                  fit: BoxFit.contain,
-                  child: timeDisplay(getValueOrDash(years), ' years')),
+                fit: BoxFit.contain,
+                child: timeDisplay(
+                  getValueOrDash(years),
+                  zeroYear(years),
+                ),
+              ),
               FittedBox(
-                  fit: BoxFit.contain,
-                  child: timeDisplay(getValueOrDash(months), ' months')),
+                fit: BoxFit.contain,
+                child: timeDisplay(
+                  getValueOrDash(months),
+                  zeroMonth(months),
+                ),
+              ),
               FittedBox(
-                  fit: BoxFit.contain,
-                  child: timeDisplay(getValueOrDash(days), ' days')),
+                fit: BoxFit.contain,
+                child: timeDisplay(
+                  getValueOrDash(days),
+                  zeroDay(days),
+                ),
+              ),
             ],
           ),
         )
