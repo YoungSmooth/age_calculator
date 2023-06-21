@@ -62,6 +62,8 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/age_calculator.png"
+    # after flutter pub get, run - flutter pub run flutter_launcher_icons
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
