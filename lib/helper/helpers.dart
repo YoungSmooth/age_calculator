@@ -3,13 +3,13 @@ String getValueOrDash(int value) {
 }
 
 String zeroYear(int value) {
-  return value == 0 ? ' year' : ' years';
+  return (value == 0 || value == 1) ? ' year' : ' years';
 }
 
 String zeroMonth(int value) {
-  return value == 0 ? ' month' : ' months';
+  return (value == 0 || value == 1) ? ' month' : ' months';
 }
 
 String zeroDay(int value) {
-  return value == 0 ? ' day' : ' days';
+  return (value == 0 || value == 1) ? ' day' : ' days';
 }

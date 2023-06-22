@@ -14,14 +14,18 @@ class RowForm extends StatefulWidget {
 bool isDesktop(BuildContext context) =>
     MediaQuery.of(context).size.width >= 600;
 
-class _RowFormState extends State<RowForm> with AnimationMixin {
-  late Animation<double> size;
+class _RowFormState extends State<RowForm> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    size = Tween<double>(begin: 0.0, end: 30).animate(controller);
-    controller.play(duration: const Duration(seconds: 10));
+    _animationController = AnimationController(
+      lowerBound: 0.9,
+      upperBound: 1,
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    )..repeat(reverse: true);
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -31,6 +35,7 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
   void dispose() {
     super.dispose();
     monthInput.dispose();
+    _animationController.dispose();
   }
 
   int years = 0;
@@ -76,12 +81,23 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
     });
   }
 
+  void _animationEffect() {
+    () {
+      if (_animationController.isAnimating) {
+        _animationController.play();
+      } else {
+        _animationController.play();
+      }
+    };
+  }
+
   void _checkAge() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _ageCalculator();
       _formKey.currentState!.reset();
       monthInput.clear();
+      _animationEffect();
     }
   }
 
@@ -308,16 +324,23 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
                             InkWell(
                               onTap: _checkAge,
                               child: CircleAvatar(
-                                radius: isDesktop(context) ? 40 : 30,
-                                backgroundColor: ColorManager.kpurple,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: SvgPicture.asset(
-                                    svg,
-                                    height: 30,
-                                    semanticsLabel: 'Age calculator Enter',
-                                    colorFilter: const ColorFilter.mode(
-                                        Colors.white, BlendMode.srcIn),
+                                backgroundColor: Colors.purple.shade100,
+                                radius: 32,
+                                child: ScaleTransition(
+                                  scale: _animationController,
+                                  child: CircleAvatar(
+                                    radius: 28,
+                                    backgroundColor: ColorManager.kpurple,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: SvgPicture.asset(
+                                        svg,
+                                        height: 20,
+                                        semanticsLabel: 'Age calculator Enter',
+                                        colorFilter: const ColorFilter.mode(
+                                            Colors.white, BlendMode.srcIn),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -350,16 +373,24 @@ class _RowFormState extends State<RowForm> with AnimationMixin {
                                 child: InkWell(
                                   onTap: _checkAge,
                                   child: CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: ColorManager.kpurple,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: SvgPicture.asset(
-                                        svg,
-                                        height: 25,
-                                        semanticsLabel: 'Age calculator Enter',
-                                        colorFilter: const ColorFilter.mode(
-                                            Colors.white, BlendMode.srcIn),
+                                    radius: 30,
+                                    backgroundColor: Colors.purple.shade100,
+                                    child: ScaleTransition(
+                                      scale: _animationController,
+                                      child: CircleAvatar(
+                                        radius: 25,
+                                        backgroundColor: ColorManager.kpurple,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: SvgPicture.asset(
+                                            svg,
+                                            height: 25,
+                                            semanticsLabel:
+                                                'Age calculator Enter',
+                                            colorFilter: const ColorFilter.mode(
+                                                Colors.white, BlendMode.srcIn),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
