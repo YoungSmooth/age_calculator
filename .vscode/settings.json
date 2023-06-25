@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Users/hp/Desktop/Here/Projects/age_calculator/age_calculator/windows/flutter"
+    "cmake.sourceDirectory": "C:/Users/hp/Desktop/Here/Projects/age_calculator/age_calculator/windows/flutter",
+    "cmake.configureOnOpen": false
 }
